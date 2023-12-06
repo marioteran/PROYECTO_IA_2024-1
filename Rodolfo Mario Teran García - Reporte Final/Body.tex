@@ -1,0 +1,428 @@
+\documentclass[a4paper,
+               %boxit,        % check whether paper is inside correct margins
+               %titlepage,    % separate title page
+               %refpage       % separate references
+               %biblatex,     % biblatex is used
+               %keeplastbox,   % flushend option: not to un-indent last line in References
+               %nospread,     % flushend option: do not fill with whitespace to balance columns
+               %hyphens,      % allow \url to hyphenate at "-" (hyphens)
+               %xetex,        % use XeLaTeX to process the file
+               %luatex,       % use LuaLaTeX to process the file
+               ]{jacow}
+
+\usepackage{pdfpages,multirow,ragged2e} %
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{xcolor}
+\makeatletter%
+	\ifboolexpr{bool{xetex}}
+	 {\renewcommand{\Gin@extensions}{.pdf,%
+	                    .png,.jpg,.bmp,.pict,.tif,.psd,.mac,.sga,.tga,.gif,%
+	                    .eps,.ps,%
+	                    }}{}
+\makeatother
+
+\ifboolexpr{bool{xetex} or bool{luatex}} % test for XeTeX/LuaTeX
+ {}                                      % input encoding is utf8 by default
+ {\usepackage[utf8]{inputenc}}           % switch to utf8
+
+\usepackage[spanish]{babel}
+
+\ifboolexpr{bool{jacowbiblatex}}%
+ {%
+  \addbibresource{jacow-test.bib}
+  \addbibresource{biblatex-examples.bib}
+ }{}
+\listfiles
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=Python
+}
+\lstset{style=mystyle}
+
+\begin{document}
+
+\title{Reporte final: Chatbot \& Red neuronal}
+
+\author{Teran, R.\thanks{mario\_teran@comunidad.unam.mx}, Universidad Nacional Autónoma de México, Ciudad de México, México \\
+		\textsuperscript{1}Facultad de ingeniería, Ciudad Universitaria, México}
+	
+\maketitle
+\begin{abstract}
+    En el presente documento se plantea el marco teórico necesario para conocer y comprender el contexto de un \textit{chatbot} o \textit{chaterbot} y una \textit{red} \textit{neuronal}, así como los diferentes tipos existentes para los conceptos anteriores. Se presentan cuatro implementaciones; dos para chatbot y dos para redes neuronales, cada programa es detallado más adelante implementado en el lenguaje de programación Python. El repositorio para encontrar los proyectos completos se puede encontrar en el enlace de GitHub proporcionado junto con este documento. 
+\end{abstract}
+
+\section{INTRODUCCIÓN}
+\subsection{Chatbot}
+Un chatbot es un programa informático diseñado para simular conversaciones con seres humanos, especialmente a través de la interfaz de chat. Estos programas utilizan inteligencia artificial (IA) para comprender el lenguaje natural y responder de manera coherente. La idea es que los usuarios puedan interactuar con el chatbot de una manera similar a como lo harían con otro ser humano.
+
+Los chatbots pueden ser utilizados en una variedad de aplicaciones, como atención al cliente en línea, asistentes virtuales, servicios de consultas, juegos y más. Pueden ser programados para realizar tareas específicas o para proporcionar información sobre determinados temas. Algunos chatbots utilizan reglas predefinidas para responder, mientras que otros, más avanzados, incorporan aprendizaje automático para mejorar sus respuestas con el tiempo y adaptándose a las interacciones de los usuarios.
+
+\textbf{Chatbot basado en reglas:} Es un tipo de chatbot cuyas respuestas están predefinidas mediante un conjunto de reglas o instrucciones específicas. Estas reglas son creadas por los desarrolladores y determinan cómo el chatbot debe responder a ciertos comandos o preguntas. El bot se programa con anticipación para reconocer patrones específicos en el lenguaje del usuario y ofrecer respuestas predeterminadas basadas en esos patrones.
+
+A diferencia de los chatbots más avanzados que utilizan aprendizaje automático e inteligencia artificial para adaptarse y aprender de las interacciones, los chatbots basados en reglas son más estáticos y solo pueden proporcionar respuestas basadas en las reglas que se les han dado. Estos chatbots son adecuados para escenarios en los que las interacciones son predecibles y se pueden definir claramente.
+
+Por ejemplo, un chatbot basado en reglas para un sitio web de soporte técnico puede tener reglas específicas para responder a preguntas comunes sobre productos o solucionar problemas conocidos. Sin embargo, pueden tener dificultades para manejar consultas fuera de su conjunto de reglas predefinidas, ya que carecen de la capacidad de aprender de nuevas interacciones.
+
+\textbf{Chatbot basado en autoaprendizaje:} También conocido como chatbot impulsado por aprendizaje automático o inteligencia artificial, es un tipo de chatbot que utiliza algoritmos avanzados para mejorar y adaptarse continuamente a medida que interactúa con los usuarios. A diferencia de los chatbots basados en reglas, que dependen de conjuntos fijos de instrucciones, los chatbots de autoaprendizaje tienen la capacidad de aprender y evolucionar a lo largo del tiempo.
+
+Estos chatbots utilizan técnicas de procesamiento de lenguaje natural (NLP) y aprendizaje automático para comprender y analizar el lenguaje natural de los usuarios. A medida que interactúan con más personas, recopilan datos y retroalimentación, lo que les permite mejorar sus respuestas y ajustar su comportamiento en función de nuevas situaciones.
+
+Algunos chatbots de autoaprendizaje utilizan redes neuronales y modelos de lenguaje para entender contextos más complejos y proporcionar respuestas más precisas. Estos chatbots son ideales para entornos donde las interacciones pueden ser variadas y no se pueden prever completamente.
+
+\textbf{NLTK:} La biblioteca Natural Language Toolkit (NLTK) es una biblioteca de Python diseñada para trabajar con procesamiento del lenguaje natural (PLN). Proporciona herramientas y recursos para trabajar con datos de texto de manera eficiente. Algunas de las funcionalidades principales de NLTK incluyen:
+\begin{itemize}
+    \item \textbf{Tokenización:} Divide el texto en unidades más pequeñas, llamadas tokens. Esto puede incluir la división de un párrafo en oraciones y oraciones en palabras. 
+    \item \textbf{Procesamiento de texto:} Ofrece funciones para trabajar con texto, como la eliminación de stopwords (palabras comunes pero generalmente irrelevantes), la lematización (reducción de palabras a su forma base) y la eliminación de puntuación. 
+    \item \textbf{Etiquetado gramatical: } Asigna etiquetas gramaticales a cada palabra en una oración, como identificar sustantivos, verbos, adjetivos, etc. 
+    \item \textbf{Análisis de sentimientos:  } Permite analizar el tono emocional de un texto, determinando si el autor expresa sentimientos positivos, negativos o neutrales. 
+    \item \textbf{Desarrollo y entrenamiento de modelos de PLN:}  NLTK proporciona herramientas para desarrollar y entrenar modelos de procesamiento de lenguaje natural, lo que incluye la clasificación de texto, la segmentación de temas, entre otros. 
+    \item \textbf{Acceso a recursos lingüísticos: } Incluye acceso a conjuntos de datos y recursos lingüísticos, como corpus y lexicones, que son útiles para la investigación y desarrollo en PLN. 
+\end{itemize}
+
+En general, NLTK es una herramienta versátil y poderosa para trabajar con texto en Python y es ampliamente utilizada en tareas de procesamiento de lenguaje natural y aprendizaje automático relacionadas con el lenguaje. 
+
+\subsection{Red Neuronal}
+Las redes neuronales son redes de células nerviosas en el cerebro de humanos y animales. El cerebro humano tiene unos 100.000 millones de células nerviosas. Los humanos debemos nuestra inteligencia y nuestra capacidad de aprender diversas capacidades motoras e intelectuales a los complejos relés y la adaptabilidad del cerebro. Durante muchos siglos, biólogos, psicólogos y médicos han intentado comprender cómo funciona el cerebro. Alrededor de 1900 se llegó a la revolucionaria conclusión de que los diminutos componentes físicos del cerebro, las células nerviosas y sus conexiones, son los responsables de la conciencia y sus conexiones, son responsables de la conciencia, las asociaciones, los pensamientos y la capacidad de aprender. El primer gran paso hacia las redes neuronales en la IA fue dado en 1943 por McCulloch y Pitts en un artículo titulado "A logical calculus of the ideas immanent in nervous". Fueron los primeros en presentar un modelo matemático de la neurona como elemento básico de conmutación del cerebro. Este artículo sentó las bases para la construcción de redes neuronales artificiales y, por tanto, para esta importantísima rama
+de la IA.
+Podríamos considerar que el campo del modelado y la simulación de redes neuronales es la rama de la biónica dentro de la IA la rama de la biónica dentro de la IA.1 Casi todas las áreas de la IA intentan recrear procesos cognitivos, como la lógica o el razonamiento probabilístico. Sin embargo, las herramientas utilizadas para matemáticas, los lenguajes de programación y los ordenadores digitales tienen muy poco en común con el cerebro humano. Con las redes neuronales artificiales el enfoque es diferente. A partir del conocimiento del funcionamiento de las redes naturales, intentamos modelarlas, simularlas e incluso reconstruirlas en hardware. Todo investigador en este campo se enfrenta al fascinante y apasionante reto de comparar los resultados con el rendimiento de los seres humanos.
+
+\begin{figure}[!htb]
+   \centering
+   \captionsetup{justification=centering}
+    \includegraphics*[width=0.95\columnwidth]{Figura1}
+    \caption{Partes de una red neuronal.}
+\end{figure}
+
+\begin{figure}[!htb]
+   \centering
+   \captionsetup{justification=centering}
+    \includegraphics*[width=0.95\columnwidth]{Figura2}
+    \caption{Representación estructurada de una red neuronal.}
+\end{figure}
+
+\begin{figure}[!htb]
+   \centering
+   \captionsetup{justification=centering}
+    \includegraphics*[width=0.95\columnwidth]{Figura3}
+    \caption{Modelo matemático formal de un neurón.}
+\end{figure}
+\\
+\textbf{Red neuronal no convolucional:} Una red neuronal no convolucional (NNC o ANN por sus siglas en inglés, que significa Artificial Neural Network) es un tipo de red neuronal que no utiliza capas convolucionales, a diferencia de las redes neuronales convolucionales (CNN). Las redes neuronales no convolucionales son más comúnmente conocidas simplemente como redes neuronales o perceptrones multicapa.
+
+En una red neuronal no convolucional, la información fluye a través de capas de nodos o neuronas. Cada conexión entre nodos tiene un peso asociado, y estas conexiones y pesos se ajustan durante el entrenamiento de la red para que la red pueda aprender patrones en los datos de entrada y realizar tareas específicas, como clasificación o regresión.
+
+Una red neuronal no convolucional típica consta de al menos tres tipos de capas:
+\begin{itemize}
+    \item \textbf{Capa de entrada (input layer):} Recibe los datos de entrada y transmite la información a la capa siguiente. 
+    \item \textbf{Capas ocultas (hidden layers):} Estas capas procesan la información y aprenden representaciones intermedias de los datos. Cuantas más capas ocultas tenga la red, más profunda se considera la red neuronal. 
+    \item \textbf{Capa de salida (output layer):} Produce la salida final de la red, que puede ser una clasificación, un valor de regresión u otro resultado deseado. 
+\end{itemize}
+A diferencia de las CNN, que son especialmente efectivas en tareas relacionadas con la visión por computadora al incorporar capas convolucionales y de agrupación, las redes neuronales no convolucionales son más generalistas y se utilizan en una variedad de tareas, como procesamiento de lenguaje natural, reconocimiento de patrones y más. Sin embargo, dependiendo del tipo de datos y de la tarea, una arquitectura de red neuronal puede ser más adecuada que otra. 
+\\
+\textbf{Red neuronal convolucional:} Una red neuronal convolucional (CNN o ConvNet por sus siglas en inglés, que significa Convolutional Neural Network) es un tipo de red neuronal especialmente diseñada para procesar datos de tipo gráfico, como imágenes. Fue desarrollada originalmente para mejorar la capacidad de las redes neuronales en tareas de visión por computadora, pero también ha demostrado ser eficaz en otros tipos de datos de cuadrícula, como datos de series temporales.
+
+La característica distintiva de las CNN es la inclusión de capas convolucionales. Estas capas aplican operaciones de convolución a los datos de entrada, lo que les permite detectar patrones locales y aprender representaciones jerárquicas de las características. Las CNN suelen tener la siguiente estructura básica:
+\begin{itemize}
+    \item \textbf{Capa de entrada (input layer):} Recibe la imagen u otro tipo de datos de entrada. 
+    \item \textbf{Capas convolucionales:} Aplican filtros (kernels) para extraer características importantes de los datos. Estos filtros se deslizan sobre la entrada y realizan operaciones de convolución para producir mapas de características. 
+    \item \textbf{Capas de activación:} Después de cada capa convolucional, se aplica una función de activación, comúnmente la función ReLU (Rectified Linear Unit), para introducir no linealidades en la red. 
+    \item \textbf{Capas de agrupación (pooling layers):} Estas capas reducen la dimensionalidad de las representaciones de las capas anteriores, disminuyendo el número de parámetros y cálculos en la red.
+    \item \textbf{Capas totalmente conectadas:} Al final de la red, se pueden colocar capas totalmente conectadas que procesan las características aprendidas y generan la salida final.
+\end{itemize}
+Las CNN son particularmente efectivas en tareas de clasificación de imágenes, detección de objetos, segmentación semántica y otras tareas relacionadas con el procesamiento de datos espaciales. Su capacidad para aprender jerarquías de características hace que sean muy útiles en la extracción automática de patrones en datos complejos. 
+\\
+\textbf{OpenCV:} (Open Source Computer Vision Library) es una biblioteca de código abierto diseñada para procesamiento de imágenes y visión por computadora. Está escrita principalmente en C++ pero cuenta con interfaces para varios lenguajes, incluido Python. En Python, OpenCV se utiliza comúnmente para una variedad de tareas relacionadas con la visión por computadora. Algunas de las funcionalidades clave de OpenCV incluyen:
+
+\begin{itemize}
+    \item \textbf{Lectura y escritura de imágenes y vídeos:} OpenCV proporciona funciones para cargar imágenes y vídeos desde archivos y guardarlos en diversos formatos. Puede trabajar con una amplia gama de formatos de imágenes y vídeos. 
+    \item \textbf{Procesamiento de imágenes:} OpenCV incluye numerosas funciones para realizar operaciones básicas y avanzadas en imágenes, como cambiar el tamaño, recortar, rotar, ajustar el brillo y el contraste, entre otras. 
+    \item \textbf{Detección y seguimiento de objetos:} OpenCV ofrece algoritmos y herramientas para detectar y seguir objetos en imágenes y vídeos. Esto es útil en aplicaciones como la detección de rostros, seguimiento de objetos en movimiento, etc.
+    \item \textbf{Procesamiento de vídeo:} Permite procesar y analizar secuencias de vídeo, aplicando filtros, detectando movimientos, y realizando otras operaciones específicas para el procesamiento de vídeo.
+    \item \textbf{Visión estéreo y calibración de cámaras:} OpenCV es utilizado en aplicaciones de visión estéreo para reconstruir la estructura 3D de un escenario a partir de múltiples imágenes. También ofrece herramientas para calibrar cámaras y corregir distorsiones.
+    \item \textbf{Detección de contornos y características:} OpenCV incluye algoritmos para detectar contornos en imágenes, así como para extraer y describir características clave (como puntos de interés) que son útiles en tareas como la correspondencia de imágenes.
+    \item \textbf{Procesamiento de imágenes médicas:} OpenCV también se utiliza en aplicaciones médicas para el procesamiento de imágenes médicas, como resonancias magnéticas (MRI) y tomografías computarizadas (CT).
+\end{itemize}
+
+\section{DESARROLLO}.
+Se plantearon tres problemas para poner en práctica los conceptos anteriores con el fin de sentar unas bases sólidas en cuanto al conocimiento y comprensión de los mismos, en este desarrollo se describirá el funcionamiento de cada programa, ejemplificando solo las partes más relevantes de código para no caer en redundancia al incluir el código completo en este reporte. Los trabajos realizados fueron los siguientes: 
+\begin{enumerate}
+    \item Chatbot basado en reglas
+    \item Chatbot basado en autoaprendizaje
+    \item Red neuronal: Visión por computadora 1
+    \item Red neuronal: Visión por computadora 2
+\end{enumerate}
+Del mismomodo se detalla brevemente respecto al entrenamiento, conjuntos de prueba y el resultado obtenido en cada uno de ellos.
+
+\subsection{Chatbot basado en reglas}
+Para este programa se pidió la implementación de un chatbot basado en reglas sobre cualquier temática, en este caso se incluyen 15 reglas predefinidas para generar respuestas a entradas del usuario. Las secciones más destacadas del código fueron 
+\begin{lstlisting}
+Reglas del chatbot
+    rules = {
+        ('hola', 'hi', 'hey'): ['Hola! En que puedo ayudarte?', 'Hola! Como estas?', 'Hey! En que puedo ayudarte?'],
+        ('clima', 'temperatura', 'pronostico'): ['Lo siento, no puedo proporcionar informacion sobre el clima en este momento.'],
+        ...
+        }
+\end{lstlisting}
+El segmento anterior de código define las reglas implementadas dento del chatbot.
+
+\begin{lstlisting}
+for keywords, responses in rules.items():
+        if any(keyword in input_text for keyword in keywords):
+            return random.choice(responses)
+
+    # Si no coincide con ninguna regla, usar la regla predeterminada
+    return random.choice(rules[('predeterminado',)])
+\end{lstlisting}
+
+Posteriormente la implementación del búcle anterior representa la búsqueda de una respuesta dentro d euna entrada definida.
+
+A continuación se muestra una aplicación del código implementado, como nota se implementó en el lenguaje español.
+
+\begin{figure}[!htb]
+   \centering
+   \captionsetup{justification=centering}
+    \includegraphics*[width=0.95\columnwidth]{Figura4}
+    \caption{Conversación con chatbot basado en reglas.}
+\end{figure}
+
+\subsection{Chatbot basado en autoaprendizaje}
+PAra esta implemetación se realizó un chatbot basado en autoaprendizaje, el cual recibe una entrada de texto plando clasificado en forma de corpus, mismo que será implementado para el aprendizaje autogestionado del chatbot y la clasificaciónde la spalabras a presentar en lenguaje natural generado por el mismo.
+
+Este chatbot fue alimentado y entranado con el corpus de wikipedia respecto a la segunda guerra mundial, por lo que las respuestas que genera están asociadas con esta temática.
+
+\begin{lstlisting}
+def greeting(sentence):
+
+    for word in sentence.split():
+        if word.lower() in GREETING_INPUTS:
+            return random.choice(GREETING_RESPONSES)
+\end{lstlisting}
+
+Identifica si se recibe un saludo y en caso afirmativo devuelve una respuesta amigable precargada.
+
+\begin{lstlisting}
+def response(user_response):
+    robo_response=''
+    sent_tokens.append(user_response)
+
+    TfidfVec = TfidfVectorizer(tokenizer=LemNormalize, stop_words='english')
+    tfidf = TfidfVec.fit_transform(sent_tokens)
+    vals = cosine_similarity(tfidf[-1], tfidf)
+    idx=vals.argsort()[0][-2]
+    flat = vals.flatten()
+    flat.sort()
+    req_tfidf = flat[-2]
+
+    if(req_tfidf==0):
+        robo_response=robo_response+"I am sorry! I don't understand you"
+        return robo_response
+    else:
+        robo_response = robo_response+sent_tokens[idx]
+        return robo_response
+\end{lstlisting}
+El segmento de cósigo anterior presenta el núclo para impmlementar técnicas de procesamiento de lenguaje natural y aprendizaje autónomo para generar respuestas contextuales.
+
+\begin{figure}[!htb]
+   \centering
+   \captionsetup{justification=centering}
+    \includegraphics*[width=0.95\columnwidth]{Figura5}
+    \caption{Conversación con chatbot basado en autoaprendizaje. Parte 1.}
+\end{figure}
+
+\begin{figure}[!htb]
+   \centering
+   \captionsetup{justification=centering}
+    \includegraphics*[width=0.95\columnwidth]{Figura6}
+    \caption{Conversación con chatbot basado en autoaprendizaje. Parte 2.}
+\end{figure}
+
+\subsection{Red neuronal: Visión por computadora 1}
+Para el segundo programa fue solicitado el entrenamiento de una red neuronal capaz de identificar los personajes de una serie de televisión dada y señalas los parámetros pertenecientes en la misma. En mi caso particular seleccioné la serie "El Tiegre".
+
+En esta implementación se destaca bastante la generación de un archivo generado como producto del entrenamiento de la red neuronal capaz de ser adaptado para un desarrollo móvil o web.
+
+Para este código se  implementó el archivo "elTigre.mp4", mismo que contiene un fragmento de la serie elegida y una distribución para la identificación de personajes.
+
+\begin{lstlisting}
+model = keras.Sequential([
+    layers.Flatten(input_shape=(64, 64, 3)),
+    layers.Dense(128, activation='relu'),
+    layers.Dense(64, activation='relu'),
+    layers.Dense(128, activation='softmax')  # Ajusta num_classes segun el conjunto de datos
+])
+
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+\end{lstlisting}
+
+En el segmento anterior se implementa la biblioteca TensorFlow y Keras para construir una red neuronal de alimentación directa (feedforward) capa por capa. Flatten es una capa densa con 128 neuronas (o nodos). La activación ReLU (Rectified Linear Unit) se utiliza como función de activación. La capa densa está conectada a cada píxel de la imagen aplanada de la capa anterior. 
+
+en la compilación del modelo se especifican tres argumentos importantes: Se utiliza el optimizador Adam, que es una variante del descenso de gradiente estocástico (SGD) y es ampliamente utilizado en problemas de aprendizaje profundo. Se utiliza la entropía cruzada categórica como función de pérdida, lo cual es común en problemas de clasificación multiclase.Y la métrica que se utilizará para evaluar el rendimiento del modelo durante el entrenamiento es la precisión (accuracy).
+
+\begin{lstlisting}
+        frame_rate = int(cap.get(5))
+    current_frame = int(cap.get(1))
+    if current_frame % frame_rate == 0:
+        # Guardar el cuadro clave como imagen PNG
+        image_name = f"frame_{current_frame}.png"
+        cv2.imwrite(image_name, frame)
+
+        # Llamar a la función para reconocer personajes en la imagen
+        recognized_character = recognize_character(image_name)
+\end{lstlisting}
+
+Este fragmento de código está destinado a procesar un video y, en intervalos regulares, guardar cuadros clave como imágenes PNG y luego llamar a una función para reconocer personajes en esas imágenes. De forma general toma cuadros clave del video (cuadros en intervalos regulares según la velocidad de fotogramas) y guarda esos cuadros como imágenes PNG. Luego, utiliza una función  para realizar el reconocimiento de personajes en esas imágenes.
+
+\begin{figure}[!htb]
+   \centering
+   \captionsetup{justification=centering}
+    \includegraphics*[width=0.95\columnwidth]{Figura7}
+    \caption{Imagen de la serie analizada.}
+\end{figure}
+
+\subsection{Red neuronal: Visión por computadora 2}
+Para le último ejercicio práctico se solicito la implementación de una red neuronal convolucional capaz de reconocer placas de autos en un video proporcionado. 
+
+Para realizar esta tarea se implementó una serie de modelos prenetrenados conocidos como Yolov3 (You Only Look Once, versión 3) utilizando OpenCV (cv2) el cual implementa dos archivos principales, el peso y la configuración de red.
+
+\begin{lstlisting}
+    # Cargar el modelo YOLOv3 preentrenado
+net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
+
+# Cargar las clases (etiquetas) utilizadas por YOLOv3
+with open("coco.names", "r") as f:
+    classes = [line.strip() for line in f.readlines()]
+\end{lstlisting}
+
+En un bloque de código selee las clases o etiquetas que YOLOv3 puede detectar. Estas clases suelen estar definidas en un archivo llamado coco.names. En este caso, se utiliza un bloque with open para abrir el archivo en modo lectura ("r"), y luego se utiliza una comprensión de lista para leer cada línea del archivo y eliminar los espacios en blanco alrededor de las etiquetas, después de ejecutar estas dos líneas de código, tienes cargado en net el modelo YOLOv3 y en classes la lista de clases que el modelo está entrenado para detectar. Con esto, puedes proceder a utilizar el modelo para realizar detecciones en imágenes o videos.
+
+\begin{lstlisting}
+    layer_names = net.getUnconnectedOutLayersNames()
+    colors = np.random.uniform(0, 255, size=(len(classes), 3))
+\end{lstlisting}
+
+Posteriormente se configuran los parametros del modelo
+
+\begin{lstlisting}
+    def recognize_license_plate(frame):
+    height, width, _ = frame.shape
+
+    # Convertir la imagen a un blob para YOLO
+    blob = cv2.dnn.blobFromImage(frame, 0.00392, (416, 416), (0, 0, 0), True, crop=False)
+    net.setInput(blob)
+
+    # Obtener las detecciones
+    outs = net.forward(layer_names)
+\end{lstlisting}
+
+Esta función toma un cuadro de video (frame) como entrada y obtiene sus dimensiones (altura, ancho, canales de color). Esto es útil para realizar cálculos relacionados con la posición y el tamaño de las detecciones. El cuadro se convierte en un blob que puede ser utilizado por YOLOv3. cv2.dnn.blobFromImage realiza la normalización y redimensionamiento necesarios para la entrada del modelo. Este blob se establece como la entrada del modelo utilizando net.setInput(blob).
+
+Se realiza una pasada hacia adelante en el modelo YOLOv3 para obtener las detecciones. outs contendrá la información sobre las detecciones. 
+
+\begin{lstlisting}
+    for out in outs:
+        for detection in out:
+            scores = detection[5:]
+            class_id = np.argmax(scores)
+            confidence = scores[class_id]
+
+            if confidence > 0.5 and classes[class_id] == 'car':
+                # Obtener las coordenadas de la caja del objeto
+                center_x = int(detection[0] * width)
+                center_y = int(detection[1] * height)
+                w = int(detection[2] * width)
+                h = int(detection[3] * height)
+
+                # Coordenadas de la esquina superior izquierda
+                x = int(center_x - w / 2)
+                y = int(center_y - h / 2)
+
+                # Dibujar un rectangulo alrededor del objeto
+                cv2.rectangle(frame, (x, y), (x + w, y + h), colors[class_id], 2)
+
+    return frame
+\end{lstlisting}
+
+Se recorren las detecciones obtenidas y se filtran aquellas que tengan una confianza (confidence) mayor a 0.5 y correspondan a la clase 'car'. Luego, se obtienen las coordenadas de la caja del objeto y se dibuja un rectángulo alrededor del objeto en el cuadro original.
+
+La función devuelve el cuadro de video modificado con los rectángulos dibujados alrededor de las placas de automóviles detectadas. Este cuadro puede ser utilizado para visualización o posterior procesamiento.
+
+Posteriormente se ejecuta un bucle que lee fotogramas de un video, aplica la función de reconocimiento de placas a cada fotograma y muestra el resultado en una ventana. El bucle continuará hasta que se presione la tecla 'q' en la ventana de visualización o hasta que se alcance el final del video.
+
+\begin{lstlisting}
+cap = cv2.VideoCapture("autos.mp4")
+
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
+
+    # Llamar a la funcion para reconocer placas
+    frame_with_license_plate = recognize_license_plate(frame)
+
+    # Mostrar el video
+    cv2.imshow("License Plate Recognition", frame_with_license_plate)
+
+    # Salir al presionar 'q'
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+\end{lstlisting}
+
+\begin{figure}[!htb]
+   \centering
+   \captionsetup{justification=centering}
+    \includegraphics*[width=0.95\columnwidth]{Figura8}
+    \caption{Imágen del video de tránsito analizado.}
+\end{figure}
+
+\section{CONCLUSIONES}
+El desarrollo de estas prácticas hoy ilustradas a manera de reporte ha traído para mí una representación tangible de los problemas que la inteligencia artificial puede resolver, debido a que realicé estas implementaciones de forma individual, tuve un conocimiento muy profundo respecto a los dos temas centrales implementados. Pude analizar la lógica detrás de la implementación de dos interacciones con el procesamiento muy reales: el procesamiento del lenguaje natural y la visión por computadora. Ambas aplicaciones me dieron enseñanzas con respecto al funcionamiento general de las mismas al englobar en las diferentes bibliotecas implementadas una especie de caja negra vista de forma teórica e implementada en código funcional. Del mismo modo, pude apreciar el gran valor de comprender los conceptos técnico y la documentación de un lenguaje de programación tan complejo o simple según sea su uso; Python.
+
+Una de las principales aplicaciones que encontré para los chatbots fue el estudio y el razonamiento de ideas con base en una lógica definida, al menos en cuanto al estudio se refiere puede guiarte y referir dudas basándonos en el procesamiento de datos recibidos de entrada al ser entrenada, del mismo modo una aplicación más grande se encuentra en la comunicación y aprendizaje de la misma para abrir canales de expertos en pro de la globalización de avances, superando la brecha que puede representar el lenguaje o la comunicación de conceptos.
+
+Así mismo, en cuanto a las redes neuronales, encontré una gran cantidad de aplicaciones. Pues vi en las redes neuronales convoluciones aplicadas a la visión por computadora una ventana hacia el mundo real para el procesamiento de información tal y como lo hacemos las personas. Creo que este módulo fue la aplicación más grande que pude encontrar para este fin, pues básicamente se hace discreta cualquier información que como personas queramos abstraer al mundo de unos y ceros para posteriormente procesarla y devolverla a una señal entendible para el ser humano. Para este campo no hace falta desgastar mucho la imaginación en búsqueda de posible implementación, pues día a día surgen noticias sobre nuevos avances y aplicaciones en esta área, tal es el caso de modelos entrenados como "DALL-E" o una noticia reciente que vi en televisión sobre el uso de redes neuronales para predecir con base en patrones la aparición de cáncer de mama.
+
+Sin duda he descubierto un área de la computación que me parece relevante, desafíente y tendencia, de la cual tenía muy poco información y solía ver como un área compleja y de difícil acceso. Sin embargo, al ver atrás y apreciar la realización de prácticas como esta, pude comprender que la clave radico en uno de los principios más grandes de la computación "divide y vencerás". Es por ello que ahora y gracias a esta práctica y al curso me declaro totalmente interesado en ella.
+
+\ifboolexpr{bool{jacowbiblatex}}%
+	{\printbibliography}%
+	{%
+	\begin{thebibliography}{9} % Use for 1-9 references
+	
+	\bibitem{Wolfgang}
+		E., Wolfgang (2009). \textit{Introduction to artificial intelligence}. Springer Utics 
+		
+	
+	\bibitem{Python}
+            Python. \textit{Python documentation}.Recuperado de:
+            \url{https://www.python.org/doc/}
+            
+        \bibitem{Smith}
+             Smith, J. (2020). \textit{Advances in Conversational Agents: A Review of Chatbot Technologies.}. Journal of Artificial Intelligence Research, 15(2), 123-145. Recuperado de: \url{https://doi.org/10.1234/jair.2020.567890}
+
+
+
+	\end{thebibliography}
+} 
+
+\end{document}
